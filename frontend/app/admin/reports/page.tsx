@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
+import { API_URL } from '../../config';
 
 export default function AdminReports() {
     const [stats, setStats] = useState<any>(null);
@@ -14,9 +15,9 @@ export default function AdminReports() {
 
         // Fetch all data
         Promise.all([
-            fetch('http://localhost:3000/users', { headers: { 'Authorization': `Bearer ${token}` } }),
-            fetch('http://localhost:3000/queries', { headers: { 'Authorization': `Bearer ${token}` } }),
-            fetch('http://localhost:3000/categories', { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetch(`${API_URL}/users`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetch(`${API_URL}/queries`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetch(`${API_URL}/categories`, { headers: { 'Authorization': `Bearer ${token}` } }),
         ])
             .then(([usersRes, queriesRes, catsRes]) =>
                 Promise.all([usersRes.json(), queriesRes.json(), catsRes.json()])
@@ -253,7 +254,7 @@ export default function AdminReports() {
                                         <div className="w-32 bg-gray-200 rounded-full h-2">
                                             <div
                                                 className={`h-2 rounded-full ${priority === 'HIGH' ? 'bg-red-600' :
-                                                        priority === 'MEDIUM' ? 'bg-yellow-600' : 'bg-green-600'
+                                                    priority === 'MEDIUM' ? 'bg-yellow-600' : 'bg-green-600'
                                                     }`}
                                                 style={{ width: `${(count / stats.total) * 100}%` }}
                                             ></div>

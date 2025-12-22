@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
+import { API_URL } from '../config';
 
 export default function AgentDashboard() {
     const [user, setUser] = useState<any>(null);
@@ -16,7 +17,7 @@ export default function AgentDashboard() {
         }
 
         // Fetch user profile
-        fetch('http://localhost:3000/auth/profile', {
+        fetch(`${API_URL}/auth/profile`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },
         })

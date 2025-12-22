@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Card } from '../../../components/Card';
 import { Button } from '../../../components/Button';
+import { API_URL } from '../../../config';
 
 export default function AdminQueryDetailPage() {
     const params = useParams();
@@ -16,7 +17,7 @@ export default function AdminQueryDetailPage() {
         const token = localStorage.getItem('access_token');
 
         // Fetch query details with user info
-        fetch(`http://localhost:3000/queries/${id}`, {
+        fetch(`${API_URL}/queries/${id}`, {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
@@ -26,8 +27,8 @@ export default function AdminQueryDetailPage() {
             })
             .catch(() => setLoading(false));
 
-        // Fetch remarks
-        fetch(`http://localhost:3000/remarks?queryId=${id}`, {
+        // Fetch query details with user info
+        fetch(`${API_URL}/queries/${id}`, {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
@@ -39,7 +40,7 @@ export default function AdminQueryDetailPage() {
 
         const token = localStorage.getItem('access_token');
         try {
-            await fetch(`http://localhost:3000/queries/${id}`, {
+            await fetch(`${API_URL}/queries/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
             });

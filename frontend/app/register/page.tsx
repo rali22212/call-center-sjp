@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
+import { API_URL } from '../config';
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -18,10 +19,16 @@ export default function RegisterPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+
+        if (formData.password.length < 6) {
+            setError('Password must be at least 6 characters');
+            return;
+        }
+
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3000/auth/register', {
+            const response = await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

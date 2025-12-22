@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
+import { API_URL } from '../../config';
 
 export default function CategoriesManagement() {
     const [categories, setCategories] = useState<any[]>([]);
@@ -15,7 +16,7 @@ export default function CategoriesManagement() {
 
     const fetchCategories = () => {
         const token = localStorage.getItem('access_token');
-        fetch('http://localhost:3000/categories', {
+        fetch(`${API_URL}/categories`, {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
@@ -31,7 +32,7 @@ export default function CategoriesManagement() {
         const token = localStorage.getItem('access_token');
 
         try {
-            await fetch('http://localhost:3000/categories', {
+            await fetch(`${API_URL}/categories`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +57,7 @@ export default function CategoriesManagement() {
 
         const token = localStorage.getItem('access_token');
         try {
-            await fetch(`http://localhost:3000/categories/${id}`, {
+            await fetch(`${API_URL}/categories/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
             });

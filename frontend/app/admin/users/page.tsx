@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
+import { API_URL } from '../../config';
 
 export default function UsersManagement() {
     const [users, setUsers] = useState<any[]>([]);
@@ -17,7 +18,7 @@ export default function UsersManagement() {
 
     const fetchUsers = () => {
         const token = localStorage.getItem('access_token');
-        fetch('http://localhost:3000/users', {
+        fetch(`${API_URL}/users`, {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
@@ -33,7 +34,7 @@ export default function UsersManagement() {
         const token = localStorage.getItem('access_token');
 
         try {
-            await fetch('http://localhost:3000/auth/register', {
+            await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -55,7 +56,7 @@ export default function UsersManagement() {
 
         const token = localStorage.getItem('access_token');
         try {
-            await fetch(`http://localhost:3000/users/${id}`, {
+            await fetch(`${API_URL}/users/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
             });

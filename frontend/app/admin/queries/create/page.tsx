@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '../../../components/Card';
 import { Button } from '../../../components/Button';
 import { Input } from '../../../components/Input';
+import { API_URL } from '../../../config';
 
 export default function AdminCreateQuery() {
     const [formData, setFormData] = useState({
@@ -20,7 +21,7 @@ export default function AdminCreateQuery() {
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
-        fetch('http://localhost:3000/categories', {
+        fetch(`${API_URL}/categories`, {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
@@ -41,7 +42,7 @@ export default function AdminCreateQuery() {
         const token = localStorage.getItem('access_token');
 
         try {
-            const response = await fetch('http://localhost:3000/queries', {
+            const response = await fetch(`${API_URL}/queries`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

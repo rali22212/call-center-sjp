@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
+import { API_URL } from '../../config';
 
 export default function QueriesList() {
     const [queries, setQueries] = useState<any[]>([]);
@@ -11,8 +12,8 @@ export default function QueriesList() {
     useEffect(() => {
         const token = localStorage.getItem('access_token');
         const url = filter === 'ALL'
-            ? 'http://localhost:3000/queries'
-            : `http://localhost:3000/queries?status=${filter}`;
+            ? `${API_URL}/queries`
+            : `${API_URL}/queries?status=${filter}`;
 
         fetch(url, {
             headers: { 'Authorization': `Bearer ${token}` },
@@ -61,8 +62,8 @@ export default function QueriesList() {
                                     key={status}
                                     onClick={() => setFilter(status)}
                                     className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === status
-                                            ? 'bg-emerald-600 text-white'
-                                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white'
+                                        ? 'bg-emerald-600 text-white'
+                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white'
                                         }`}
                                 >
                                     {status.replace('_', ' ')}

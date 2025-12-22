@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Card } from '../../../components/Card';
 import { Button } from '../../../components/Button';
+import { API_URL } from '../../../config';
 
 export default function QueryDetailPage() {
     const params = useParams();
@@ -17,7 +18,7 @@ export default function QueryDetailPage() {
         const token = localStorage.getItem('access_token');
 
         // Fetch query details
-        fetch(`http://localhost:3000/queries/${id}`, {
+        fetch(`${API_URL}/queries/${id}`, {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
@@ -28,7 +29,7 @@ export default function QueryDetailPage() {
             .catch(() => setLoading(false));
 
         // Fetch remarks
-        fetch(`http://localhost:3000/remarks?queryId=${id}`, {
+        fetch(`${API_URL}/remarks?queryId=${id}`, {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
@@ -38,7 +39,7 @@ export default function QueryDetailPage() {
     const handleStatusUpdate = async (newStatus: string) => {
         const token = localStorage.getItem('access_token');
         try {
-            await fetch(`http://localhost:3000/queries/${id}`, {
+            await fetch(`${API_URL}/queries/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -57,7 +58,7 @@ export default function QueryDetailPage() {
 
         const token = localStorage.getItem('access_token');
         try {
-            const response = await fetch('http://localhost:3000/remarks', {
+            const response = await fetch(`${API_URL}/remarks`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
+import { API_URL } from '../config';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ export default function LoginPage() {
 
         try {
             console.log('[Login] Attempting login with:', email);
-            const response = await fetch('http://localhost:3000/auth/login', {
+            const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

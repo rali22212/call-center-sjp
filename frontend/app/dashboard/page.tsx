@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Card } from '../components/Card';
+import { API_URL } from '../config';
 
-export default function DashboardPage() {
+export default function Dashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -10,7 +12,6 @@ export default function DashboardPage() {
             const token = localStorage.getItem('access_token');
 
             if (!token) {
-                console.log('[Dashboard] No token, redirecting to login');
                 window.location.href = '/login';
                 return;
             }
