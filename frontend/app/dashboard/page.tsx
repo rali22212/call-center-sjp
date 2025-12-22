@@ -18,7 +18,7 @@ export default function Dashboard() {
 
             try {
                 console.log('[Dashboard] Fetching user profile...');
-                const response = await fetch('http://localhost:3000/auth/profile', {
+                const response = await fetch(`${API_URL}/auth/profile`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

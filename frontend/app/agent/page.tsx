@@ -30,7 +30,7 @@ export default function AgentDashboard() {
             .catch(() => window.location.href = '/login');
 
         // Fetch query stats
-        fetch('http://localhost:3000/queries', {
+        fetch(`${API_URL}/queries`, {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
