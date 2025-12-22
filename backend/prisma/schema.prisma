@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+
+enum Role {
+  ADMIN
+  AGENT
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum QueryStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+// Models
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(AGENT)
+  createdAt DateTime @default(now())
+
+  // Relations
+  queries   Query[]  @relation("AssignedAgent")
+  remarks   Remark[]
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String
+  parentId  Int?
+  
+  // Relations
+  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryHierarchy")
+  queries   Query[]
+}
+
+model Query {
+  id          Int         @id @default(autoincrement())
+  cnic        String
+  phone       String
+  title       String
+  description String?
+  status      QueryStatus @default(PENDING)
+  priority    Priority    @default(MEDIUM)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Foreign Keys
+  userId      Int?
+  categoryId  Int
+
+  // Relations
+  user        User?     @relation("AssignedAgent", fields: [userId], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id])
+  tasks       Task[]
+  remarks     Remark[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  // Foreign Keys
+  queryId     Int
+
+  // Relations
+  query       Query    @relation(fields: [queryId], references: [id])
+}
+
+model Remark {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  // Foreign Keys
+  queryId   Int
+  userId    Int
+
+  // Relations
+  query     Query    @relation(fields: [queryId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
