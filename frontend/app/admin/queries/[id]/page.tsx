@@ -27,8 +27,8 @@ export default function AdminQueryDetailPage() {
             })
             .catch(() => setLoading(false));
 
-        // Fetch query details with user info
-        fetch(`${API_URL}/queries/${id}`, {
+        // Fetch remarks
+        fetch(`${API_URL}/remarks?queryId=${id}`, {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
