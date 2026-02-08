@@ -8,10 +8,12 @@ import { getCache, setCache } from '../utils/cache';
 import { API_URL } from '../config';
 
 type AdminStats = { users: number; queries: number; categories: number; pending: number };
+type OnlineStats = { online: number; total: number };
 
 export default function AdminDashboard() {
     const [user, setUser] = useState<any>(null);
     const [stats, setStats] = useState<AdminStats>({ users: 0, queries: 0, categories: 0, pending: 0 });
+    const [onlineStats, setOnlineStats] = useState<OnlineStats>({ online: 0, total: 0 });
     const [dataLoaded, setDataLoaded] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [systemHealth, setSystemHealth] = useState<{ status: 'OPERATIONAL' | 'ISSUE', message: string }>({ status: 'OPERATIONAL', message: 'System is operational' });
@@ -70,11 +72,12 @@ export default function AdminDashboard() {
             fetch(`${API_URL}/users/stats`, { headers: { 'Authorization': `Bearer ${token}` } }),
             fetch(`${API_URL}/queries/stats`, { headers: { 'Authorization': `Bearer ${token}` } }),
             fetch(`${API_URL}/categories/stats`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetch(`${API_URL}/users/online`, { headers: { 'Authorization': `Bearer ${token}` } }),
         ])
-            .then(([usersRes, queriesRes, catsRes]) =>
-                Promise.all([usersRes.json(), queriesRes.json(), catsRes.json()])
+            .then(([usersRes, queriesRes, catsRes, onlineRes]) =>
+                Promise.all([usersRes.json(), queriesRes.json(), catsRes.json(), onlineRes.json()])
             )
-            .then(([userStats, queryStats, catStats]) => {
+            .then(([userStats, queryStats, catStats, onlineData]) => {
                 const newStats: AdminStats = {
                     users: userStats.total || 0,
                     queries: queryStats.total || 0,
@@ -83,6 +86,7 @@ export default function AdminDashboard() {
                 };
                 setStats(newStats);
                 setCache('admin_stats', newStats);
+                setOnlineStats(onlineData || { online: 0, total: 0 });
                 setDataLoaded(true);
             });
     }, [mounted]);
@@ -208,6 +212,18 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card title="Recent Activity" icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}>
                         <div className="space-y-4">
+                            {/* Active Users Indicator */}
+                            <div className="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+                                    <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                                        <strong>{onlineStats.online}</strong> of {onlineStats.total} users online
+                                    </p>
+                                </div>
+                                <span className="text-xs px-2 py-1 bg-emerald-100 dark:bg-emerald-800/50 text-emerald-600 dark:text-emerald-300 rounded-full font-medium">
+                                    Live
+                                </span>
+                            </div>
                             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
                                 <div className={`w-2 h-2 rounded-full ${systemHealth.status === 'OPERATIONAL' ? 'bg-emerald-500' : 'bg-red-500 animate-pulse'}`}></div>
                                 <p className={`text-sm ${systemHealth.status === 'OPERATIONAL' ? 'text-slate-600 dark:text-slate-300' : 'text-red-600 dark:text-red-400 font-medium'}`}>
@@ -235,6 +251,12 @@ export default function AdminDashboard() {
                             </p>
                             <p className="text-sm text-slate-600 dark:text-slate-400">
                                 📊 Download CSV reports for offline analysis.
+                            </p>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                                ✏️ Click <strong>Edit</strong> on any query to update its status, priority, or category.
+                            </p>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                                👥 Monitor user performance in Reports to identify top-performing agents.
                             </p>
                         </div>
                     </Card>

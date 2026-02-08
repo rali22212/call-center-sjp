@@ -34,13 +34,14 @@ enum QueryStatus {
 // Models
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role     @default(AGENT)
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  password     String
+  name         String
+  role         Role      @default(AGENT)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  lastActiveAt DateTime?  // Tracks when user was last active (for online status)
 
   // Relations
   queries   Query[]  @relation("AssignedAgent")

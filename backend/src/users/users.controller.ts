@@ -16,6 +16,12 @@ export class UsersController {
         return this.usersService.getStats();
     }
 
+    @Get('online')
+    @Roles(Role.ADMIN)
+    getOnline() {
+        return this.usersService.getOnlineCount();
+    }
+
     @Get()
     @Roles(Role.ADMIN)
     findAll(@QueryParam('page') page: number = 1, @QueryParam('limit') limit: number = 10, @QueryParam('search') search?: string) {

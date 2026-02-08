@@ -92,4 +92,29 @@ export class UsersService {
             disabled,
         };
     }
+
+    // Update user's lastActiveAt timestamp (call on login and API requests)
+    async updateLastActive(userId: number): Promise<void> {
+        await this.prisma.user.update({
+            where: { id: userId },
+            data: { lastActiveAt: new Date() },
+        });
+    }
+
+    // Get count of users who were active in the last X minutes (default: 10)
+    async getOnlineCount(minutesThreshold: number = 10): Promise<{ online: number; total: number }> {
+        const threshold = new Date(Date.now() - minutesThreshold * 60 * 1000);
+
+        const [online, total] = await Promise.all([
+            this.prisma.user.count({
+                where: {
+                    lastActiveAt: { gte: threshold },
+                    isActive: true,
+                },
+            }),
+            this.prisma.user.count({ where: { isActive: true } }),
+        ]);
+
+        return { online, total };
+    }
 }
