@@ -226,7 +226,7 @@ export default function AdminReports() {
             }
 
             const headers = ['Complaint #', 'Title', 'Status', 'Priority', 'Category', 'CNIC', 'Phone', 'Created Date'];
-            const rows = userQueries.map(q => [
+            const rows = userQueries.map((q: any) => [
                 q.complaintNumber || `#${q.id}`,
                 `"${q.title.replace(/"/g, '""')}"`,
                 q.status,
@@ -237,7 +237,7 @@ export default function AdminReports() {
                 new Date(q.createdAt).toLocaleString(),
             ]);
 
-            const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+            const csvContent = [headers.join(','), ...rows.map((row: any) => row.join(','))].join('\n');
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
