@@ -143,6 +143,10 @@ export default function QueryDetailPage() {
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
+                                    <div className="col-span-2">
+                                        <label className="text-sm font-medium text-gray-500">Customer Name</label>
+                                        <p className="text-gray-900 dark:text-white mt-1 text-lg font-semibold">{query.customerName || 'Candidate'}</p>
+                                    </div>
                                     <div>
                                         <label className="text-sm font-medium text-gray-500">CNIC</label>
                                         <p className="text-gray-900 dark:text-white mt-1">{query.cnic}</p>

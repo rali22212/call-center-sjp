@@ -8,6 +8,7 @@ import { API_URL } from '../../../config';
 
 export default function AdminCreateQuery() {
     const [formData, setFormData] = useState({
+        customerName: '',
         cnic: '',
         phone: '',
         title: '',
@@ -78,6 +79,14 @@ export default function AdminCreateQuery() {
 
                 <Card title="Admin: Create New Query">
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        <Input
+                            label="Customer Name"
+                            placeholder="Enter customer name (max 20 characters)"
+                            value={formData.customerName}
+                            onChange={(e) => setFormData({ ...formData, customerName: e.target.value.slice(0, 20) })}
+                            required
+                        />
+
                         <Input
                             label="CNIC (13 digits)"
                             placeholder="e.g., 3520212345678"
