@@ -117,4 +117,13 @@ export class UsersService {
 
         return { online, total };
     }
+
+    // Update user password
+    async updatePassword(id: number, hashedPassword: string): Promise<void> {
+        await this.prisma.user.update({
+            where: { id },
+            data: { password: hashedPassword },
+        });
+    }
 }
+

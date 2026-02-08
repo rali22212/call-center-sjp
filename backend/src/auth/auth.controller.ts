@@ -37,4 +37,25 @@ export class AuthController {
         const { password, ...result } = user;
         return result;
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('change-password')
+    async changePassword(@Request() req: any, @Body() passwordData: { currentPassword: string; newPassword: string }) {
+        const user = await this.usersService.findOneById(req.user.userId);
+        if (!user) {
+            return { success: false, message: 'User not found' };
+        }
+
+        // Verify current password
+        const isCurrentPasswordValid = await bcrypt.compare(passwordData.currentPassword, user.password);
+        if (!isCurrentPasswordValid) {
+            return { success: false, message: 'Current password is incorrect' };
+        }
+
+        // Hash new password and update
+        const hashedPassword = await bcrypt.hash(passwordData.newPassword, 10);
+        await this.usersService.updatePassword(user.id, hashedPassword);
+
+        return { success: true, message: 'Password changed successfully' };
+    }
 }

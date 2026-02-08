@@ -14,6 +14,13 @@ export default function AgentDashboard() {
     const [stats, setStats] = useState<AgentStats>({ total: 0, pending: 0, resolved: 0, inProgress: 0 });
     const [dataLoaded, setDataLoaded] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [passwordSuccess, setPasswordSuccess] = useState('');
 
     // Load cached data on mount (client-side only)
     useEffect(() => {
@@ -75,6 +82,51 @@ export default function AgentDashboard() {
         window.location.href = '/login';
     };
 
+    const handleChangePassword = async () => {
+        setPasswordError('');
+        setPasswordSuccess('');
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            setPasswordError('All fields are required');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            setPasswordError('New passwords do not match');
+            return;
+        }
+        if (newPassword.length < 6) {
+            setPasswordError('Password must be at least 6 characters');
+            return;
+        }
+
+        const token = localStorage.getItem('access_token');
+        try {
+            const res = await fetch(`${API_URL}/auth/change-password`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ currentPassword, newPassword }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setPasswordSuccess('Password changed successfully!');
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+                setTimeout(() => {
+                    setShowPasswordModal(false);
+                    setPasswordSuccess('');
+                }, 2000);
+            } else {
+                setPasswordError(data.message || 'Failed to change password');
+            }
+        } catch (error) {
+            setPasswordError('Failed to change password');
+        }
+    };
+
     // Show skeleton only if no data yet
     if (!user || !dataLoaded) {
         return <DashboardSkeleton />;
@@ -100,24 +152,58 @@ export default function AgentDashboard() {
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
-                                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                                    <span className="text-sm font-semibold text-emerald-600">
-                                        {user.name?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
-                                    </span>
-                                </div>
-                                <div className="text-sm">
-                                    <p className="font-medium text-slate-700 dark:text-slate-200">
-                                        {user.name || 'Agent'} ({user.role})
-                                    </p>
-                                    <p className="text-xs text-slate-500">{user.email}</p>
-                                </div>
+                            {/* User Menu Dropdown */}
+                            <div className="relative">
+                                <button
+                                    onClick={() => setShowUserMenu(!showUserMenu)}
+                                    className="hidden sm:flex items-center gap-3 px-4 py-2 bg-slate-50 dark:bg-slate-700/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                                >
+                                    <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                                        <span className="text-sm font-semibold text-emerald-600">
+                                            {user.name?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <div className="text-sm text-left">
+                                        <p className="font-medium text-slate-700 dark:text-slate-200">
+                                            {user.name || 'Agent'} ({user.role})
+                                        </p>
+                                        <p className="text-xs text-slate-500">{user.email}</p>
+                                    </div>
+                                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                {showUserMenu && (
+                                    <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 py-2 z-50">
+                                        <button
+                                            onClick={() => { setShowPasswordModal(true); setShowUserMenu(false); }}
+                                            className="w-full px-4 py-2 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2"
+                                        >
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                            </svg>
+                                            Change Password
+                                        </button>
+                                        <hr className="my-2 border-slate-200 dark:border-slate-700" />
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2"
+                                        >
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                            </svg>
+                                            Logout
+                                        </button>
+                                    </div>
+                                )}
                             </div>
-                            <Button variant="ghost" size="sm" onClick={handleLogout}>
+
+                            <Button variant="ghost" size="sm" onClick={handleLogout} className="sm:hidden">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                 </svg>
-                                Logout
                             </Button>
                         </div>
                     </div>
@@ -216,6 +302,84 @@ export default function AgentDashboard() {
                     © 2026 Call Center Management System • Developed by Internees
                 </p>
             </footer>
+
+            {/* Change Password Modal */}
+            {showPasswordModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm" onClick={() => setShowPasswordModal(false)}>
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                                <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-800 dark:text-white">Change Password</h2>
+                                <p className="text-sm text-slate-500">Update your account password</p>
+                            </div>
+                        </div>
+
+                        {passwordError && (
+                            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm">
+                                {passwordError}
+                            </div>
+                        )}
+
+                        {passwordSuccess && (
+                            <div className="mb-4 p-3 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-lg text-emerald-600 dark:text-emerald-400 text-sm">
+                                {passwordSuccess}
+                            </div>
+                        )}
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Current Password</label>
+                                <input
+                                    type="password"
+                                    value={currentPassword}
+                                    onChange={(e) => setCurrentPassword(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                    placeholder="Enter current password"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">New Password</label>
+                                <input
+                                    type="password"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                    placeholder="Enter new password"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Confirm New Password</label>
+                                <input
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                    placeholder="Confirm new password"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-6">
+                            <Button variant="outline" onClick={() => { setShowPasswordModal(false); setPasswordError(''); setPasswordSuccess(''); }} className="flex-1">
+                                Cancel
+                            </Button>
+                            <Button onClick={handleChangePassword} className="flex-1">
+                                Change Password
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Click outside to close user menu */}
+            {showUserMenu && (
+                <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
+            )}
         </div>
     );
 }
