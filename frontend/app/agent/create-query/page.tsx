@@ -53,7 +53,11 @@ export default function CreateQuery() {
                     'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    ...formData,
+                    cnic: formData.cnic,
+                    phone: formData.phone,
+                    title: formData.title,
+                    description: formData.description,
+                    priority: formData.priority,
                     categoryId: parseInt(formData.categoryId),
                     userId: JSON.parse(atob(token!.split('.')[1])).sub,
                     status: 'PENDING',

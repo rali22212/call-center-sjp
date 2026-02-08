@@ -60,7 +60,10 @@ export default function EditQueryPage({ params }: { params: Promise<{ id: string
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    ...formData,
+                    title: formData.title,
+                    description: formData.description,
+                    status: formData.status,
+                    priority: formData.priority,
                     categoryId: formData.categoryId ? parseInt(formData.categoryId) : null
                 }),
             });
