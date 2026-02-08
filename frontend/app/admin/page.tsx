@@ -23,11 +23,13 @@ export default function AdminDashboard() {
         setMounted(true);
         const cachedUser = getCache('admin_user');
         const cachedStats = getCache<AdminStats>('admin_stats');
+        const cachedOnline = getCache<OnlineStats>('admin_online');
         if (cachedUser) setUser(cachedUser);
         if (cachedStats) {
             setStats(cachedStats);
             setDataLoaded(true);
         }
+        if (cachedOnline) setOnlineStats(cachedOnline);
     }, []);
 
     useEffect(() => {
@@ -86,7 +88,9 @@ export default function AdminDashboard() {
                 };
                 setStats(newStats);
                 setCache('admin_stats', newStats);
-                setOnlineStats(onlineData || { online: 0, total: 0 });
+                const onlineResult = onlineData || { online: 0, total: 0 };
+                setOnlineStats(onlineResult);
+                setCache('admin_online', onlineResult);
                 setDataLoaded(true);
             });
     }, [mounted]);
