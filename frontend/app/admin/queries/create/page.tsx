@@ -57,7 +57,10 @@ export default function AdminCreateQuery() {
                 }),
             });
 
-            if (!response.ok) throw new Error('Failed to create query');
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || `Failed to create query (${response.status})`);
+            }
 
             // Admin redirect to admin queries list
             window.location.href = '/admin/queries';
