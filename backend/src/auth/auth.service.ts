@@ -14,8 +14,17 @@ export class AuthService {
         console.log('[AuthService] Validating user:', email);
         const user = await this.usersService.findOne(email);
         console.log('[AuthService] User found:', user ? `Yes (ID: ${user.id})` : 'No');
+
+        // Check if user exists and password matches
         if (user && (await bcrypt.compare(pass, user.password))) {
             console.log('[AuthService] Password match: Yes');
+
+            // Check if user is active (not disabled by admin)
+            if (user.isActive === false) {
+                console.log('[AuthService] User is disabled');
+                return null; // Return null to indicate failed auth
+            }
+
             const { password, ...result } = user;
             return result;
         }

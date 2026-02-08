@@ -20,6 +20,11 @@ export default function RegisterPage() {
         e.preventDefault();
         setError('');
 
+        if (formData.name.length > 30) {
+            setError('Name must be 30 characters or less');
+            return;
+        }
+
         if (formData.password.length < 6) {
             setError('Password must be at least 6 characters');
             return;
@@ -41,6 +46,17 @@ export default function RegisterPage() {
 
             if (!response.ok) {
                 const errorData = await response.json();
+
+                // Handle duplicate email specifically
+                if (response.status === 409 || errorData.message?.toLowerCase().includes('already exists')) {
+                    throw new Error('This email address is already registered');
+                }
+
+                // Hide sensitive server errors for 500s
+                if (response.status >= 500) {
+                    throw new Error('Something went wrong. Please try again later.');
+                }
+
                 throw new Error(errorData.message || 'Registration failed');
             }
 

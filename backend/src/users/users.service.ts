@@ -18,8 +18,39 @@ export class UsersService {
         });
     }
 
-    async findAll(): Promise<User[]> {
-        return this.prisma.user.findMany();
+    async findAll(page: number = 1, limit: number = 10, search?: string) {
+        const where: Prisma.UserWhereInput = search ? {
+            OR: [
+                { name: { contains: search, mode: 'insensitive' } },
+                { email: { contains: search, mode: 'insensitive' } },
+            ]
+        } : {};
+
+        const total = await this.prisma.user.count({ where });
+        const lastPage = Math.ceil(total / limit) || 1;
+        const safePage = Math.min(Math.max(page, 1), Math.max(lastPage, 1));
+        const skip = (safePage - 1) * limit;
+
+        const data = await this.prisma.user.findMany({
+            where,
+            orderBy: { createdAt: 'desc' },
+            include: {
+                _count: {
+                    select: { queries: true }
+                }
+            },
+            skip,
+            take: Number(limit),
+        });
+
+        return {
+            data,
+            meta: {
+                total,
+                page: safePage,
+                lastPage,
+            }
+        };
     }
 
     async findOneById(id: number): Promise<User | null> {
@@ -35,9 +66,30 @@ export class UsersService {
         });
     }
 
+    async toggleActive(id: number): Promise<User> {
+        const user = await this.prisma.user.findUnique({ where: { id } });
+        return this.prisma.user.update({
+            where: { id },
+            data: { isActive: !user?.isActive },
+        });
+    }
+
     async remove(id: number): Promise<User> {
         return this.prisma.user.delete({
             where: { id },
         });
+    }
+    async getStats() {
+        const [total, active, disabled] = await Promise.all([
+            this.prisma.user.count(),
+            this.prisma.user.count({ where: { isActive: true } }),
+            this.prisma.user.count({ where: { isActive: false } }),
+        ]);
+
+        return {
+            total,
+            active,
+            disabled,
+        };
     }
 }

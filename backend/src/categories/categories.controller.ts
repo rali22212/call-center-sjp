@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query as QueryParam } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
@@ -16,9 +16,15 @@ export class CategoriesController {
         return this.categoriesService.create(createCategoryDto);
     }
 
+    @Get('stats')
+    @Roles(Role.ADMIN)
+    getStats() {
+        return this.categoriesService.getStats();
+    }
+
     @Get()
-    findAll() {
-        return this.categoriesService.findAll();
+    findAll(@QueryParam('page') page: number = 1, @QueryParam('limit') limit: number = 10, @QueryParam('search') search?: string) {
+        return this.categoriesService.findAll(+page, +limit, search);
     }
 
     @Get(':id')
@@ -30,6 +36,12 @@ export class CategoriesController {
     @Roles(Role.ADMIN)
     update(@Param('id') id: string, @Body() updateCategoryDto: any) {
         return this.categoriesService.update(+id, updateCategoryDto);
+    }
+
+    @Patch(':id/toggle-hidden')
+    @Roles(Role.ADMIN)
+    toggleHidden(@Param('id') id: string) {
+        return this.categoriesService.toggleHidden(+id);
     }
 
     @Delete(':id')

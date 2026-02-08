@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query as QueryParam } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
@@ -10,10 +10,16 @@ import { Role } from '@prisma/client';
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
+    @Get('stats')
+    @Roles(Role.ADMIN)
+    getStats() {
+        return this.usersService.getStats();
+    }
+
     @Get()
     @Roles(Role.ADMIN)
-    findAll() {
-        return this.usersService.findAll();
+    findAll(@QueryParam('page') page: number = 1, @QueryParam('limit') limit: number = 10, @QueryParam('search') search?: string) {
+        return this.usersService.findAll(+page, +limit, search);
     }
 
     @Get(':id')
@@ -27,9 +33,16 @@ export class UsersController {
         return this.usersService.update(+id, updateUserDto);
     }
 
+    @Patch(':id/toggle-active')
+    @Roles(Role.ADMIN)
+    toggleActive(@Param('id') id: string) {
+        return this.usersService.toggleActive(+id);
+    }
+
     @Delete(':id')
     @Roles(Role.ADMIN)
     remove(@Param('id') id: string) {
         return this.usersService.remove(+id);
     }
+
 }

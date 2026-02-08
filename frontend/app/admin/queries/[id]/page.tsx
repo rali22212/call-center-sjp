@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Card } from '../../../components/Card';
 import { Button } from '../../../components/Button';
+import { DeleteConfirmModal } from '../../../components/DeleteConfirmModal';
 import { API_URL } from '../../../config';
 
 export default function AdminQueryDetailPage() {
@@ -12,6 +13,7 @@ export default function AdminQueryDetailPage() {
     const [query, setQuery] = useState<any>(null);
     const [remarks, setRemarks] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
@@ -36,8 +38,6 @@ export default function AdminQueryDetailPage() {
     }, [id]);
 
     const handleDelete = async () => {
-        if (!confirm('Are you sure you want to delete this query? This cannot be undone.')) return;
-
         const token = localStorage.getItem('access_token');
         try {
             await fetch(`${API_URL}/queries/${id}`, {
@@ -209,14 +209,18 @@ export default function AdminQueryDetailPage() {
                                 <Button
                                     className="w-full"
                                     variant="outline"
-                                    onClick={() => window.location.href = `/agent/queries/${id}`}
+                                    onClick={() => window.open(`/agent/queries/${id}/report`, '_blank')}
                                 >
-                                    View as Agent
+                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    View Report as PDF
                                 </Button>
+
                                 <Button
                                     className="w-full"
                                     variant="danger"
-                                    onClick={handleDelete}
+                                    onClick={() => setShowDeleteModal(true)}
                                 >
                                     Delete Query
                                 </Button>
@@ -238,6 +242,16 @@ export default function AdminQueryDetailPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            <DeleteConfirmModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDelete}
+                title="Delete Query"
+                message="Are you sure you want to delete this query? All associated remarks and data will be permanently removed."
+                itemName={query?.title}
+            />
         </div>
     );
 }
