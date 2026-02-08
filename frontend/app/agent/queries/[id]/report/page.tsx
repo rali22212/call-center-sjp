@@ -113,10 +113,10 @@ export default function QueryReportPDF() {
                         Save as PDF
                     </button>
                     <button
-                        onClick={() => window.history.back()}
+                        onClick={() => window.close()}
                         className="px-4 py-2 bg-gray-600 text-white rounded-lg shadow-lg hover:bg-gray-700 transition-colors"
                     >
-                        ← Back
+                        Close
                     </button>
                 </div>
 
