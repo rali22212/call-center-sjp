@@ -25,7 +25,11 @@ export default function CreateQuery() {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
-            .then(data => setCategories(Array.isArray(data) ? data : []));
+            .then(response => {
+                // Handle both paginated response and plain array
+                const data = response.data || response;
+                setCategories(Array.isArray(data) ? data : []);
+            });
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
