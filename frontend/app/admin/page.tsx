@@ -335,20 +335,20 @@ export default function AdminDashboard() {
                     </Card>
 
                     <Card title="Quick Tips" icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>}>
-                        <div className="space-y-3">
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                        <div className="space-y-4">
+                            <p className="text-base text-slate-600 dark:text-slate-400">
                                 💡 Use the <strong>Reports</strong> section to export data by date range or user.
                             </p>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                            <p className="text-base text-slate-600 dark:text-slate-400">
                                 🔍 Search queries by complaint number for quick lookup.
                             </p>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                            <p className="text-base text-slate-600 dark:text-slate-400">
                                 📊 Download CSV reports for offline analysis.
                             </p>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                            <p className="text-base text-slate-600 dark:text-slate-400">
                                 ✏️ Click <strong>Edit</strong> on any query to update its status, priority, or category.
                             </p>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                            <p className="text-base text-slate-600 dark:text-slate-400">
                                 👥 Monitor user performance in Reports to identify top-performing agents.
                             </p>
                         </div>
