@@ -48,13 +48,12 @@ export class QueriesService {
             where.status = status as any;
         }
 
-        // Search by complaint number, CNIC, title, or customer name
+        // Search by complaint number, CNIC, or title
         if (search) {
             where.OR = [
                 { complaintNumber: { contains: search, mode: 'insensitive' } },
                 { cnic: { contains: search } },
                 { title: { contains: search, mode: 'insensitive' } },
-                { customerName: { contains: search, mode: 'insensitive' } },
             ];
         }
 
