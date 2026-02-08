@@ -26,7 +26,7 @@ export default function AdminCreateQuery() {
             headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(res => res.json())
-            .then(data => setCategories(data));
+            .then(data => setCategories(Array.isArray(data) ? data : (data.data || [])));
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
