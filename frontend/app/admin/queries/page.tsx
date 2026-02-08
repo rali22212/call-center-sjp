@@ -161,7 +161,7 @@ export default function AdminQueriesList() {
                         </div>
                         <input
                             type="text"
-                            placeholder="Search by Complaint #, CNIC, or Title..."
+                            placeholder="Search by Name, Complaint #, CNIC, or Title..."
                             value={search}
                             onChange={(e) => {
                                 setSearch(e.target.value);
@@ -209,9 +209,12 @@ export default function AdminQueriesList() {
                                 <thead>
                                     <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                                         <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Complaint #</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Customer</th>
                                         <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Title</th>
-                                        <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">CNIC</th>
                                         <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Created By</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Created</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
                                         <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                                         <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Created</th>
                                         <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
@@ -230,12 +233,19 @@ export default function AdminQueriesList() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
+                                                <div>
+                                                    <p className="text-sm font-medium text-slate-800 dark:text-white">
+                                                        {query.customerName || 'Candidate'}
+                                                    </p>
+                                                    <p className="text-xs text-slate-500 font-mono">
+                                                        {query.cnic}
+                                                    </p>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
                                                 <span className="font-medium text-slate-800 dark:text-white text-sm">
                                                     {query.title}
                                                 </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 font-mono">
-                                                {query.cnic}
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div>

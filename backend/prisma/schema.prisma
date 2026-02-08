@@ -63,6 +63,7 @@ model Category {
 model Query {
   id              Int         @id @default(autoincrement())
   complaintNumber String      @unique  // Human-readable ID like CMP-2602-00001
+  customerName    String      @default("Candidate")  // Customer/complainant name (max 20 chars)
   cnic            String
   phone           String
   title           String

@@ -225,9 +225,10 @@ export default function AdminReports() {
                 return;
             }
 
-            const headers = ['Complaint #', 'Title', 'Status', 'Priority', 'Category', 'CNIC', 'Phone', 'Created Date'];
+            const headers = ['Complaint #', 'Customer Name', 'Title', 'Status', 'Priority', 'Category', 'CNIC', 'Phone', 'Created Date'];
             const rows = userQueries.map((q: any) => [
                 q.complaintNumber || `#${q.id}`,
+                `"${(q.customerName || 'Candidate').replace(/"/g, '""')}"`,
                 `"${q.title.replace(/"/g, '""')}"`,
                 q.status,
                 q.priority,
@@ -621,6 +622,7 @@ export default function AdminReports() {
                             <thead className="sticky top-0 z-10">
                                 <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 shadow-sm">
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Complaint #</th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Customer</th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Title</th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Priority</th>
@@ -649,6 +651,16 @@ export default function AdminReports() {
                                                 <span className="font-mono text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
                                                     {query.complaintNumber || `#${query.id}`}
                                                 </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div>
+                                                    <p className="text-sm font-medium text-slate-800 dark:text-white">
+                                                        {query.customerName || 'Candidate'}
+                                                    </p>
+                                                    <p className="text-xs text-slate-500 font-mono">
+                                                        {query.cnic}
+                                                    </p>
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="max-w-xs truncate font-medium text-slate-800 dark:text-white" title={query.title}>

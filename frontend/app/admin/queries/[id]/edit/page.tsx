@@ -13,6 +13,7 @@ export default function EditQueryPage({ params }: { params: Promise<{ id: string
     const [categories, setCategories] = useState<any[]>([]);
 
     const [formData, setFormData] = useState({
+        customerName: '',
         title: '',
         description: '',
         status: 'PENDING',
@@ -30,6 +31,7 @@ export default function EditQueryPage({ params }: { params: Promise<{ id: string
             .then(([queryRes, catsRes]) => Promise.all([queryRes.json(), catsRes.json()]))
             .then(([queryData, catsData]) => {
                 setFormData({
+                    customerName: queryData.customerName || '',
                     title: queryData.title,
                     description: queryData.description || '',
                     status: queryData.status,
@@ -92,6 +94,14 @@ export default function EditQueryPage({ params }: { params: Promise<{ id: string
 
                 <Card>
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        <Input
+                            label="Customer Name"
+                            value={formData.customerName}
+                            onChange={(e) => setFormData({ ...formData, customerName: e.target.value.slice(0, 20) })}
+                            hint="Max 20 characters"
+                            required
+                        />
+
                         <Input
                             label="Title"
                             value={formData.title}

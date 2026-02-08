@@ -8,6 +8,7 @@ import { API_URL } from '../../config';
 
 export default function CreateQuery() {
     const [formData, setFormData] = useState({
+        customerName: '',
         cnic: '',
         phone: '',
         title: '',
@@ -108,6 +109,19 @@ export default function CreateQuery() {
                             <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                                 Customer Information
                             </h3>
+                            <Input
+                                label="Customer Name"
+                                placeholder="Enter customer name"
+                                hint="Max 20 characters"
+                                value={formData.customerName}
+                                onChange={(e) => setFormData({ ...formData, customerName: e.target.value.slice(0, 20) })}
+                                required
+                                icon={
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                }
+                            />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Input
                                     label="CNIC"
