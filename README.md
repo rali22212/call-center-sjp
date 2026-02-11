@@ -92,8 +92,8 @@ For detailed guides, please refer to:
 ---
 
 ## 👨‍💻 Development
-Developed as part of the **Call Center Management System Training Program**.
+**Ali Raza - Full Stack Developer**.
 
 ---
 
-© 2025 Call Center Internees. All rights reserved.
+© 2026 Ali Raza. All rights reserved.
