@@ -20,7 +20,7 @@ export default function Home() {
           Get Started
         </a>
         <footer className="mt-16 text-sm text-gray-500">
-          Developed by Call Center Internees
+          © SJP Developers
         </footer>
       </div>
     </div>
